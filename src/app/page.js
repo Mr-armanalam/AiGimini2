@@ -1,60 +1,64 @@
-
-'use client'
+"use client";
 import React, { useState } from "react";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import {PiUserBold} from "react-icons/pi"
-import {SiGooglebard} from "react-icons/si"
+import { PiUserBold } from "react-icons/pi";
+import { SiGooglebard } from "react-icons/si";
 import { BsArrowReturnLeft } from "react-icons/bs";
 import { FaPlus } from "react-icons/fa";
 import { RiNextjsFill } from "react-icons/ri";
 import { CgFormatSlash } from "react-icons/cg";
-
-
+import Link from "next/link";
+import { FaGithub } from "react-icons/fa";
 
 export default function Home() {
-
-
   const [userInput, setUserInput] = useState("");
   const [chatHistory, setChatHistory] = useState([]);
-  const [usersubmit,setUsersubmit] = useState(false);
-  const [storeQuestion,setStoreQuestion] = useState([]);
-  const [userClick,setUserClick] = useState(false);
+  const [usersubmit, setUsersubmit] = useState(false);
+  const [storeQuestion, setStoreQuestion] = useState([]);
+  const [userClick, setUserClick] = useState(false);
+  // const Question = [
+  //   "Syntax Errors",
+  //   "Logical Errors",
+  //   " Debugging of code",
+  //   "Reference Errors",
+  // ];
 
-  const inputHandle = (e)=>{
+  const inputHandle = (e) => {
     setUserInput(e.target.value);
     setUserClick(true);
-  }
-  
-  const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_API_KEY);
+  };
 
+  const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_API_KEY);
   const handleSubmit = async (event) => {
     event.preventDefault();
-      
-
-
-
     if (!userInput) return;
-      setStoreQuestion([...storeQuestion,userInput]);
+    setStoreQuestion([...storeQuestion, userInput]);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     const chat = model.startChat({
       history: [
         {
           role: "user",
-           parts: [{ text: "Hello, I have 2 dogs in my house." }],
+          parts: [
+            {
+              text: "Coding Assistant : please Provides explanations and code examples for programming languages",
+            },
+          ],
         },
         {
           role: "model",
-           parts: [{ text: "Great to meet you. What would you like to know?" }],
+          parts: [
+            {
+              text: "Coding Assistant, code prediction, Error detection and correction Code",
+            },
+          ],
         },
       ],
       generationConfig: {
         maxOutputTokens: 100,
       },
     });
-    // console.log(chat.history[0]);
 
     const msg = userInput;
-
     const result = await chat.sendMessage(msg);
     const response = await result.response;
     const text = response.text();
@@ -62,21 +66,27 @@ export default function Home() {
     setChatHistory([...chatHistory, text]);
     //setUserInput("");
     setUsersubmit(true);
-  }
-
+  };
 
   return (
     <>
       <div className="flex fixed z-50 justify-between w-full h-[64px] items-center bg-[#09090B] border pl-2 border-zinc-800 rounded">
         <div className="flex items-center">
-          <RiNextjsFill size={36} />
+          <Link href="/">
+            <RiNextjsFill size={36} />
+          </Link>
           <CgFormatSlash size={36} color="gray" />
           <button className="text-zinc-100 font-bold">Login</button>
         </div>
-        <div>
-          <button className="bg-black rounded-md border border-zinc-800 w-[150px] font-bold text-sm h-[42px] mr-2">
-            Github
-          </button>
+
+        <div className="flex">
+          <Link href="https://github.com/Mr-armanalam">
+            <button className="bg-black flex flex-row justify-center items-center rounded-md border border-zinc-800 w-[150px] font-bold text-sm h-[42px] mr-2">
+              <FaGithub style={{ marginRight: "14px" }} />
+              Github
+            </button>
+          </Link>
+
           <button className="rounded-md border border-zinc-800 w-[150px] h-[42px] bg-white text-sm font-bold mr-4 text-zinc-800">
             My AiChatbot
           </button>
@@ -97,16 +107,18 @@ export default function Home() {
                           className="flex flex-row border-b pb-4 border-zinc-800 mb-4"
                         >
                           <PiUserBold size={32} />
-                          <p className="text-slate-100 ps-4 text-wrap">
+                          <p className="text-slate-100 w-[92%] ps-4 text-wrap">
                             {storeQuestion[index]}
                           </p>
                         </div>
                         <div
                           key={index}
-                          className="flex flex-row  border-b pb-4 border-zinc-800 mb-4"
+                          className="flex border-b pb-4 border-zinc-800 mb-4"
                         >
-                          <SiGooglebard size={22} />
-                          <p className="text-slate-100 ps-4 text-wrap">{msg}</p>
+                          <SiGooglebard size={30} />
+                          <p className="text-slate-100 w-[92%] ps-4 text-wrap">
+                            {msg}
+                          </p>
                         </div>
                       </>
                     ))}
@@ -134,29 +146,36 @@ export default function Home() {
                 </p>
               </div>
               <div className="flex flex-row justify-between flex-wrap ">
-                <div className="bg-[#09090B] p-4 rounded-lg border border-gray-800 mb-2 w-[348px] ">
+                <div
+                  // onClick={setStoreQuestion([...storeQuestion, Question[0]])}
+                  className="bg-[#09090B] p-4 rounded-lg border border-gray-800 mb-2 w-[348px] "
+                >
                   <p className=" text-white text-base font-semibold ">
                     What are the
                   </p>
-                  <p className="text-zinc-400"> trending memecoins today</p>
+                  <p className="text-zinc-400">Syntax Errors in programming</p>
                 </div>
                 <div className="bg-[#09090B] p-4 rounded-lg border border-gray-800 mb-2 w-[348px]  ">
                   <p className=" text-white text-base font-semibold ">
                     What are the
                   </p>
-                  <p className="text-zinc-400"> trending memecoins today</p>
+                  <p className="text-zinc-400">Logical Errors in programming</p>
                 </div>
                 <div className="bg-[#09090B]  p-4 rounded-lg border border-gray-800 mb-2 w-[348px] ">
                   <p className=" text-white text-base font-semibold ">
                     What are the
                   </p>
-                  <p className="text-zinc-400"> trending memecoins today</p>
+                  <p className="text-zinc-400">
+                    debuging of code in programming
+                  </p>
                 </div>
                 <div className="bg-[#09090B]  p-4 rounded-lg border border-gray-800 mb-2 w-[348px] ">
                   <p className=" text-white text-base font-semibold ">
                     What are the
                   </p>
-                  <p className="text-zinc-400"> trending memecoins today</p>
+                  <p className="text-zinc-400">
+                    Reference Errors in programming
+                  </p>
                 </div>
               </div>
             </div>
